@@ -24,6 +24,7 @@ dependencies.svg
 .extras/lasttest-locust/__pycache__
 .extras/lasttest-locust/.venv
 .extras/postman
+.extras/postgres
 .extras/*.png
 .extras/*.jpeg
 .extras/*.gif
