@@ -32,15 +32,10 @@
 -- https://www.postgresql.org/docs/current/ddl-schemas.html#DDL-SCHEMAS-CREATE
 -- "user-private schema" (Default-Schema: public)
 
--- Create the 'bike' database if it does not exist
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT FROM pg_database WHERE datname = 'bike'
-    ) THEN
-        CREATE DATABASE bike;
-    END IF;
-END $$;
+-- Remove the DO block and directly create the database if it doesn't exist
+-- CREATE DATABASE cannot be executed inside a function, so we use a conditional check
+\connect postgres
+SELECT 'CREATE DATABASE bike' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'bike')\gexec;
 
 CREATE SCHEMA IF NOT EXISTS AUTHORIZATION bike;
 

@@ -36,8 +36,9 @@ services:
     volumes:
       - ./tls/certificate.crt:/var/lib/postgresql/certificate.crt:ro
       - ./tls/key.pem:/var/lib/postgresql/key.pem:ro
+      - ./create-db-bike.sql:/docker-entrypoint-initdb.d/create-db-bike.sql:ro
+      - ./create-schema-bike.sql:/docker-entrypoint-initdb.d/create-schema-bike.sql:ro
       - postgres-data:/var/lib/postgresql/data
-      - ../../src/config/resources/postgres:/docker-entrypoint-initdb.d:ro
     restart: unless-stopped
 
   # ------------------------------------------------------------------------------------
