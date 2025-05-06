@@ -149,4 +149,4 @@ secrets:
 
 networks:
   acme-network:
-    name: acme-network
+    external: true

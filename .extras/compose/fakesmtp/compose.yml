@@ -31,9 +31,7 @@ services:
       #  target: 8081
       #  protocol: tcp
     volumes:
-      - type: bind
-        source: C:/Zimmermann/volumes/fakesmtp
-        target: /tmp
+      - fakesmtp-data:/tmp
     networks: [acme-network]
     env_file: .env
     hostname: fakesmtp
@@ -52,4 +50,7 @@ services:
 
 networks:
   acme-network:
-    name: acme-network
+    external: true
+
+volumes:
+  fakesmtp-data:

@@ -20,18 +20,18 @@ schema {
   mutation: Mutation
 }
 
-"Funktionen, um Bücherdaten zu lesen"
+"Funktionen, um Fahrraddaten zu lesen"
 type Query {
-  buecher(suchkriterien: SuchkriterienInput): [Buch!]
+  bikes(suchkriterien: SuchkriterienInput): [Bike!]
 
-  buch(id: ID!): Buch
+  bike(id: ID!): Bike
 }
 
-"Funktionen, um Bücher neu anzulegen, zu aktualisieren oder zu löschen"
+"Funktionen, um Fahrräder neu anzulegen, zu aktualisieren oder zu löschen"
 type Mutation {
-  create(input: BuchInput!): CreatePayload
+  create(input: BikeInput!): CreatePayload
 
-  update(input: BuchUpdateInput!): UpdatePayload
+  update(input: BikeUpdateInput!): UpdatePayload
 
   delete(id: ID!): Boolean
 
@@ -40,97 +40,85 @@ type Mutation {
   refresh(refresh_token: String!): TokenResult
 }
 
-"Daten zum Titel eines Buches"
-type Titel {
-  titel: String!
-  untertitel: String
+"Daten zum Titel eines Fahrrads"
+type Title {
+  title: String!
+  subtitle: String
 }
 
-"Daten zum Titel eines Buches"
-type Abbildung {
-  beschriftung: String!
+"Daten zum Titel eines Fahrrads"
+type Image {
+  description: String!
   contentType: String
 }
 
-"Datenschema zu einem Buch, das gelesen wird"
-type Buch {
-  # ID ist bei Apollo ein String
+"Datenschema zu einem Fahrrad, das gelesen wird"
+type Bike {
   id: Int!
   version: Int!
-  isbn: String!
-  rating: Int
-  art: Art
-  preis: Float!
-  lieferbar: Boolean
-  datum: String
-  homepage: String
-  schlagwoerter: [String]
-  # 1:1-Beziehung
-  titel: Titel!
-  # field mit @ResolveField
-  rabatt(short: Boolean): String!
+  brand: String!
+  type: String
+  price: Float!
+  available: Boolean
+  createdAt: String
+  updatedAt: String
+  title: Title!
+  images: [Image!]
 }
 
-"Enum-Typ für die Art eines Buches"
-enum Art {
-  EPUB
-  HARDCOVER
-  PAPERBACK
+"Enum-Typ für die Art eines Fahrrads"
+enum Type {
+  MOUNTAIN
+  ROAD
+  HYBRID
 }
 
-"Suchkriterien für Bücher"
+"Suchkriterien für Fahrräder"
 input SuchkriterienInput {
-  titel: String
-  isbn: String
-  rating: Int
-  art: Art
-  lieferbar: Boolean
+  title: String
+  brand: String
+  type: Type
+  available: Boolean
 }
 
-"Daten zum Titel eines neuen Buches"
-input TitelInput {
-  titel: String!
-  untertitel: String
+"Daten zum Titel eines neuen Fahrrads"
+input TitleInput {
+  title: String!
+  subtitle: String
 }
 
-"Daten zu den Abbildungen eines Buches"
-input AbbildungInput {
-  beschriftung: String!
+"Daten zu den Abbildungen eines Fahrrads"
+input ImageInput {
+  description: String!
   contentType: String!
 }
 
-"Daten für ein neues Buch"
-input BuchInput {
-  isbn: String
-  rating: Int
-  art: Art
-  preis: Float
-  rabatt: Float
-  lieferbar: Boolean
-  datum: String
-  homepage: String
-  schlagwoerter: [String]
-  titel: TitelInput!
-  abbildungen: [AbbildungInput!]
+"Daten für ein neues Fahrrad"
+input BikeInput {
+  brand: String
+  type: Type
+  price: Float
+  available: Boolean
+  createdAt: String
+  updatedAt: String
+  title: TitleInput!
+  images: [ImageInput!]
 }
 
 type CreatePayload {
   id: Int
 }
 
-"Daten für ein zu änderndes Buch"
-input BuchUpdateInput {
+"Daten für ein zu änderndes Fahrrad"
+input BikeUpdateInput {
   id: ID
   version: Int
-  isbn: String
-  rating: Int
-  art: Art
-  preis: Float
-  rabatt: Float
-  lieferbar: Boolean
-  datum: String
-  homepage: String
-  schlagwoerter: [String]
+  brand: String
+  type: Type
+  price: Float
+  available: Boolean
+  createdAt: String
+  updatedAt: String
 }
 
 type UpdatePayload {

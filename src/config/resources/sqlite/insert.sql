@@ -62,3 +62,17 @@ INSERT INTO abbildung(id, beschriftung, content_type, buch_id) VALUES
     (50,'Abb. 1','img/png',50);
 INSERT INTO abbildung(id, beschriftung, content_type, buch_id) VALUES
     (60,'Abb. 1','img/png',60);
+
+INSERT INTO bike(id, version, brand, type, price, available, created_at, updated_at) VALUES
+    (1, 0, 'Trek', 'Mountain', 1200.00, true, '2025-05-01 00:00:00', '2025-05-01 00:00:00'),
+    (2, 0, 'Giant', 'Road', 1500.00, true, '2025-05-02 00:00:00', '2025-05-02 00:00:00');
+
+INSERT INTO bike_title(id, title, subtitle, bike_id) VALUES
+    (1, 'Trek Alpha', 'High Performance', 1),
+    (2, 'Giant Beta', 'Speed and Comfort', 2),
+    (3, 'Specialized Gamma', 'Versatile and Durable', 3);
+
+INSERT INTO bike_image(id, description, content_type, bike_id) VALUES
+    (1, 'Front View', 'image/png', 1),
+    (2, 'Side View', 'image/png', 2),
+    (3, 'Rear View', 'image/png', 3);

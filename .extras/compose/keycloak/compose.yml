@@ -31,41 +31,23 @@
 services:
   keycloak:
     image: quay.io/keycloak/keycloak:26.1.4-0
-    #image: keycloak/keycloak:26.1.4-0
     ports:
       - published: 8880
         target: 8080
       - published: 8843
         target: 8443
     volumes:
-      - type: bind
-        source: C:/Zimmermann/volumes/keycloak/data
-        # mit Unterverzeichnis h2
-        target: /opt/keycloak/data
-      - type: bind
-        source: key.pem
-        # https://www.keycloak.org/server/enabletls
-        target: /opt/keycloak/conf/key.pem
-        read_only: true
-      - type: bind
-        source: certificate.crt
-        target: /opt/keycloak/conf/certificate.crt
-        read_only: true
-      # ggf. /opt/keycloak/conf/keycloak.conf
+      - keycloak-data:/opt/keycloak/data
+      - ./tls/key.pem:/opt/keycloak/conf/key.pem:ro
+      - ./tls/certificate.crt:/opt/keycloak/conf/certificate.crt:ro
     networks: [acme-network]
     env_file: .env
     hostname: keycloak
     container_name: keycloak
     user: keycloak:1000
-    # https://www.keycloak.org/server/containers#_trying_keycloak_in_development_mode
-    # --features=token-exchange
-    entrypoint: ["/opt/keycloak/bin/kc.sh", "start-dev"]
-    #entrypoint: ["/opt/keycloak/bin/kc.sh", "start-dev", "--help"]
+    entrypoint: ["/opt/keycloak/bin/kc.sh", "start-dev", "--https-certificate-key-file=/opt/keycloak/conf/key.pem", "--https-certificate-file=/opt/keycloak/conf/certificate.crt"]
     cap_drop: [ALL]
-    # https://www.keycloak.org/server/health
-    # http://localhost:8880/health/ready
     healthcheck:
-      # https://www.reddit.com/r/KeyCloak/comments/14a5a1y/how_to_enable_healthcheck_on_keycloak_on/
       test:
         [
           "CMD-SHELL",
@@ -87,4 +69,9 @@ services:
 
 networks:
   acme-network:
-    name: acme-network
+    external: true
+
+volumes:
+  keycloak-data:
+  keycloak-key:
+  keycloak-cert:

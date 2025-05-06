@@ -14,7 +14,7 @@
 -- along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 -- docker compose exec postgres bash
--- psql --dbname=buch --username=buch --file=/scripts/create-table-buch.sql
+-- psql --dbname=bike --username=bike --file=/scripts/create-table-bike.sql
 
 -- text statt varchar(n):
 -- "There is no performance difference among these three types, apart from a few extra CPU cycles
@@ -24,76 +24,65 @@
 -- Indexe mit pgAdmin auflisten: "Query Tool" verwenden mit
 --  SELECT   tablename, indexname, indexdef, tablespace
 --  FROM     pg_indexes
---  WHERE    schemaname = 'buch'
+--  WHERE    schemaname = 'bike'
 --  ORDER BY tablename, indexname;
 
 -- https://www.postgresql.org/docs/devel/app-psql.html
 -- https://www.postgresql.org/docs/current/ddl-schemas.html
 -- https://www.postgresql.org/docs/current/ddl-schemas.html#DDL-SCHEMAS-CREATE
 -- "user-private schema" (Default-Schema: public)
-CREATE SCHEMA IF NOT EXISTS AUTHORIZATION buch;
 
-ALTER ROLE buch SET search_path = 'buch';
+-- Create the 'bike' database if it does not exist
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT FROM pg_database WHERE datname = 'bike'
+    ) THEN
+        CREATE DATABASE bike;
+    END IF;
+END $$;
 
--- https://www.postgresql.org/docs/current/sql-createtype.html
--- https://www.postgresql.org/docs/current/datatype-enum.html
-CREATE TYPE buchart AS ENUM ('EPUB', 'HARDCOVER', 'PAPERBACK');
+CREATE SCHEMA IF NOT EXISTS AUTHORIZATION bike;
+
+ALTER ROLE bike SET search_path = 'bike';
+
+-- Create the 'bike' role if it does not exist
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT FROM pg_catalog.pg_roles WHERE rolname = 'bike'
+    ) THEN
+        CREATE ROLE bike LOGIN PASSWORD 'securepassword';
+    END IF;
+END $$;
+
+-- Grant necessary privileges to the 'bike' role
+GRANT ALL PRIVILEGES ON SCHEMA bike TO bike;
 
 -- https://www.postgresql.org/docs/current/sql-createtable.html
 -- https://www.postgresql.org/docs/current/datatype.html
-CREATE TABLE IF NOT EXISTS buch (
-                  -- https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-INT
-                  -- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-PRIMARY-KEYS
-                  -- impliziter Index fuer Primary Key
-                  -- "GENERATED ALWAYS AS IDENTITY" gemaess SQL-Standard
-                  -- entspricht SERIAL mit generierter Sequenz buch_id_seq
-    id            integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE buchspace,
-                  -- https://www.postgresql.org/docs/current/ddl-constraints.html#id-1.5.4.6.6
-    version       integer NOT NULL DEFAULT 0,
-                  -- impliziter Index als B-Baum durch UNIQUE
-                  -- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-UNIQUE-CONSTRAINTS
-    isbn          text NOT NULL UNIQUE USING INDEX TABLESPACE buchspace,
-                  -- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-CHECK-CONSTRAINTS
-                  -- https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-POSIX-REGEXP
-    rating        integer NOT NULL CHECK (rating >= 0 AND rating <= 5),
-    art           buchart,
-                  -- https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-NUMERIC-DECIMAL
-                  -- 10 Stellen, davon 2 Nachkommastellen
-    preis         decimal(8,2) NOT NULL,
-    rabatt        decimal(4,3) NOT NULL,
-                  -- https://www.postgresql.org/docs/current/datatype-boolean.html
-    lieferbar     boolean NOT NULL DEFAULT FALSE,
-                  -- https://www.postgresql.org/docs/current/datatype-datetime.html
-    datum         date,
-    homepage      text,
-    -- schlagwoerter json,
-    schlagwoerter text,
-                  -- https://www.postgresql.org/docs/current/datatype-datetime.html
-    erzeugt       timestamp NOT NULL DEFAULT NOW(),
-    aktualisiert  timestamp NOT NULL DEFAULT NOW()
-) TABLESPACE buchspace;
+CREATE TABLE IF NOT EXISTS bike (
+    id            integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE bikespace,
+    brand         text NOT NULL,
+    type          text NOT NULL,
+    frame_size    text NOT NULL,
+    price         decimal(8,2) NOT NULL,
+    available     boolean NOT NULL DEFAULT TRUE,
+    created_at    timestamp NOT NULL DEFAULT NOW(),
+    updated_at    timestamp NOT NULL DEFAULT NOW()
+) TABLESPACE bikespace;
 
-CREATE TABLE IF NOT EXISTS titel (
-    id          integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE buchspace,
-    titel       text NOT NULL,
-    untertitel  text,
-    buch_id     integer NOT NULL UNIQUE USING INDEX TABLESPACE buchspace REFERENCES buch
-) TABLESPACE buchspace;
+CREATE TABLE IF NOT EXISTS bike_title (
+    id          integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE bikespace,
+    title       text NOT NULL,
+    subtitle    text,
+    bike_id     integer NOT NULL UNIQUE USING INDEX TABLESPACE bikespace REFERENCES bike
+) TABLESPACE bikespace;
 
-
-CREATE TABLE IF NOT EXISTS abbildung (
-    id              integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE buchspace,
-    beschriftung    text NOT NULL,
+CREATE TABLE IF NOT EXISTS bike_image (
+    id              integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE bikespace,
+    description     text NOT NULL,
     content_type    text NOT NULL,
-    buch_id         integer NOT NULL REFERENCES buch
-) TABLESPACE buchspace;
-CREATE INDEX IF NOT EXISTS abbildung_buch_id_idx ON abbildung(buch_id) TABLESPACE buchspace;
-
-CREATE TABLE IF NOT EXISTS buch_file (
-    id              integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE buchspace,
-    data            bytea NOT NULL,
-    filename        text NOT NULL,
-    mimetype        text,
-    buch_id         integer NOT NULL REFERENCES buch
-) TABLESPACE buchspace;
-CREATE INDEX IF NOT EXISTS buch_file_buch_id_idx ON buch_file(buch_id) TABLESPACE buchspace;
+    bike_id         integer NOT NULL REFERENCES bike
+) TABLESPACE bikespace;
+CREATE INDEX IF NOT EXISTS bike_image_bike_id_idx ON bike_image(bike_id) TABLESPACE bikespace;

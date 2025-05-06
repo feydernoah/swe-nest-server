@@ -54,4 +54,4 @@ services:
 # https://stackoverflow.com/questions/38088279/communication-between-multiple-docker-compose-projects#answer-48024244
 networks:
   acme-network:
-    name: acme-network
+    external: true

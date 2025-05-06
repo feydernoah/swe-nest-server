@@ -28,15 +28,10 @@ services:
         target: 9090
     restart: unless-stopped
     volumes:
-      - type: bind
-        source: ./prometheus.yml
-        target: /etc/prometheus/prometheus.yml
-        read_only: true
-      - type: bind
-        source: ./prometheus-data
-        target: /prometheus
-      - type: bind
-        source: ../../../config/resources/tls/certificate.crt
+      - prometheus-config:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+      - type: volume
+        source: prometheus-cert
         target: /etc/prometheus/certificate.crt
         read_only: true
     container_name: prometheus
@@ -48,13 +43,12 @@ services:
         target: 3000
     restart: unless-stopped
     volumes:
-      - type: bind
-        source: ./grafana-datasources
+      - type: volume
+        source: grafana-datasources
         target: /etc/grafana/provisioning/datasources
         read_only: true
-      - type: bind
-        # SQLite-Datenbank mit z.B. der Tabelle "dashboard"
-        source: ./grafana.db
+      - type: volume
+        source: grafana-db
         target: /var/lib/grafana/grafana.db
     environment:
       # https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/grafana
@@ -63,3 +57,10 @@ services:
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - GF_AUTH_DISABLE_LOGIN_FORM=true
     container_name: grafana
+
+volumes:
+  prometheus-config:
+  prometheus-data:
+  prometheus-cert:
+  grafana-datasources:
+  grafana-db:
