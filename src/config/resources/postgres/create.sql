@@ -32,10 +32,18 @@
 -- https://www.postgresql.org/docs/current/ddl-schemas.html#DDL-SCHEMAS-CREATE
 -- "user-private schema" (Default-Schema: public)
 
--- Remove the DO block and directly create the database if it doesn't exist
+-- Removed \connect and \gexec commands as they are not valid SQL for TypeORM
 -- CREATE DATABASE cannot be executed inside a function, so we use a conditional check
-\connect postgres
-SELECT 'CREATE DATABASE bike' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'bike')\gexec;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT FROM pg_database WHERE datname = 'bike') THEN
+        PERFORM dblink_exec('dbname=postgres', 'CREATE DATABASE bike');
+    END IF;
+END $$;
+
+-- Create the tablespace 'bikespace' manually before running this script
+-- Example:
+-- CREATE TABLESPACE bikespace LOCATION '/var/lib/postgresql/data/bikespace';
 
 CREATE SCHEMA IF NOT EXISTS AUTHORIZATION bike;
 
