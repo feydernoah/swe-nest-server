@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { BikeReadService } from '../service/bike-read.service.js';
 
 @Controller() // Basis-Route ist leer, damit beide Endpunkte unabhängig sind
@@ -16,8 +16,14 @@ export class BikeGetController {
   }
 
   @Get('bikewithtitles') // Endpunkt: /bikewithtitles
-  async findAllWithTitles(): Promise<string> {
-    const bikesWithTitles = await this.bikeReadService.findAllWithTitles();
+  async findAllWithTitles(
+    @Query('brand') brand?: string,
+    @Query('type') type?: string,
+  ): Promise<string> {
+    const bikesWithTitles = await this.bikeReadService.findAllWithFilters({
+      brand,
+      type,
+    });
     return JSON.stringify(bikesWithTitles);
   }
 }

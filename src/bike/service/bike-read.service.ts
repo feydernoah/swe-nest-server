@@ -16,6 +16,21 @@ export class BikeReadService {
   }
 
   async findAllWithTitles(): Promise<Bike[]> {
-    return this.bikeRepository.find({ relations: ['title'] }); // Join mit der `title`-Relation
+    return this.bikeRepository.find({ relations: ['title'] });
+  }
+
+  async findAllWithFilters(filters: { brand?: string; type?: string }): Promise<Bike[]> {
+    const queryBuilder = this.bikeRepository.createQueryBuilder('bike')
+      .leftJoinAndSelect('bike.title', 'title');
+
+    if (filters.brand) {
+      queryBuilder.andWhere('bike.brand = :brand', { brand: filters.brand });
+    }
+
+    if (filters.type) {
+      queryBuilder.andWhere('bike.type = :type', { type: filters.type });
+    }
+
+    return queryBuilder.getMany();
   }
 }
