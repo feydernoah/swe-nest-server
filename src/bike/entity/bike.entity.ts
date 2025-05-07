@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
+import { BikeTitle } from './bike-title.entity.js';
 
 @Entity()
 export class Bike {
@@ -20,6 +21,10 @@ export class Bike {
     @Column('boolean')
     available: boolean | undefined;
 
+    @OneToOne(() => BikeTitle)
+    @JoinColumn({ name: 'id', referencedColumnName: 'bikeId' })
+    title: BikeTitle | undefined;
+
     public toString = (): string =>
         JSON.stringify({
             id: this.id,
@@ -28,5 +33,6 @@ export class Bike {
             frameSize: this.frameSize,
             price: this.price,
             available: this.available,
+            title: this.title,
         });
 }

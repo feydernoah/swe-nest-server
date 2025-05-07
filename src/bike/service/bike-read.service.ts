@@ -14,4 +14,8 @@ export class BikeReadService {
   async findAll(): Promise<Bike[]> {
     return this.bikeRepository.find();
   }
+
+  async findAllWithTitles(): Promise<Bike[]> {
+    return this.bikeRepository.find({ relations: ['title'] }); // Join mit der `title`-Relation
+  }
 }
