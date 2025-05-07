@@ -53,7 +53,7 @@ services:
       - published: 8888
         target: 80
     volumes:
-      - ./pgadmin-data:/var/lib/pgadmin
+      - pgadmin-data:/var/lib/pgadmin
     networks: [acme-network]
     env_file: pgadmin.env
     user: "pgadmin:5050"
@@ -80,3 +80,4 @@ networks:
 
 volumes:
   postgres-data:
+  pgadmin-data:
