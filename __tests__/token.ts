@@ -20,11 +20,14 @@ import { httpsAgent, tokenPath } from './testserver.js';
 
 // Load environment variables from .env file
 dotenv.config();
-
-const tokenFromEnv = process.env.ACCESS_TOKEN;
-if (!tokenFromEnv) {
-    throw new Error('ACCESS_TOKEN is not set in the environment variables.');
+const accessTokenEnv = dotenv.config().parsed?.ACCESS_TOKEN ?? '';
+const tokenFromEnv = accessTokenEnv.trim() === '' ? undefined : accessTokenEnv;
+if (tokenFromEnv === undefined || tokenFromEnv.trim() === '') {
+    throw new Error(
+        'ACCESS_TOKEN is not set in the environment variables or is empty.',
+    );
 }
+// The redundant check for undefined has been removed.
 
 type TokenResult = {
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -42,7 +45,8 @@ export const tokenRest = async (
 ) => {
     const headers: Record<string, string> = {
         'Content-Type': 'application/x-www-form-urlencoded', // eslint-disable-line @typescript-eslint/naming-convention
-        Authorization: `Bearer ${tokenFromEnv}`,
+        // eslint-disable-next-line prettier/prettier, @typescript-eslint/naming-convention
+        'Authorization': `Bearer ${tokenFromEnv}`,
     };
     const response: AxiosResponse<TokenResult> = await axiosInstance.post(
         tokenPath,
@@ -71,6 +75,7 @@ export const tokenGraphQL = async (
     };
 
     const headers: Record<string, string> = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         Authorization: `Bearer ${tokenFromEnv}`,
     };
 
