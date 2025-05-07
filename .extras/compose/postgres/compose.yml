@@ -38,6 +38,7 @@ services:
       - ./tls/key.pem:/var/lib/postgresql/key.pem:ro
       - ./create-db-bike.sql:/docker-entrypoint-initdb.d/create-db-bike.sql:ro
       - ./create-schema-bike.sql:/docker-entrypoint-initdb.d/create-schema-bike.sql:ro
+      - ./csv:/var/lib/postgresql/data/csv
       - postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
 

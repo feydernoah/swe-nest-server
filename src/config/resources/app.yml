@@ -30,16 +30,16 @@
 # npm i better-sqlite3
 
 db:
-  #type: postgres
+  type: postgres
   #type: mysql
   #type: sqlite
 
-  #host: localhost
+  host: localhost
 
-  #username: buch
-  #password: p
+  username: bike
+  password: p
   #passwordAdmin: p
-  #name: buch
+  name: bike
   populate: true
 
 # ==============================================================================

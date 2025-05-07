@@ -111,9 +111,8 @@ export class DbPopulateService implements OnApplicationBootstrap {
             `SET search_path TO ${adminDataSourceOptions!.database};`,
         );
         const copyStmt =
-            "COPY %TABELLE% FROM '/csv/%TABELLE%.csv' (FORMAT csv, DELIMITER ';', HEADER true);";
+            "COPY %TABELLE% FROM '/var/lib/postgresql/data/csv/%TABELLE%.csv' (FORMAT csv, DELIMITER ';', HEADER true);";
         for (const tabelle of this.#tabellen) {
-            // eslint-disable-next-line unicorn/prefer-string-replace-all
             await dataSource.query(copyStmt.replace(/%TABELLE%/gu, tabelle));
         }
         await dataSource.destroy();

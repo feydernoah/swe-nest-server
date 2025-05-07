@@ -1,0 +1,11 @@
+id;brand;type;frame_size;price;available;created_at;updated_at
+1;Trek;Mountain;M;1200.50;true;2025-05-01;2025-05-01
+2;Giant;Road;L;950.00;true;2025-05-02;2025-05-02
+3;Specialized;Hybrid;S;800.75;false;2025-05-03;2025-05-03
+4;Cannondale;Mountain;XL;1500.00;true;2025-05-04;2025-05-04
+5;Scott;Road;M;1100.25;true;2025-05-05;2025-05-05
+6;Bianchi;Hybrid;L;700.00;false;2025-05-06;2025-05-06
+7;Cervelo;Mountain;S;2000.00;true;2025-05-07;2025-05-07
+8;Pinarello;Road;XL;1800.50;true;2025-05-08;2025-05-08
+9;Merida;Hybrid;M;650.00;false;2025-05-09;2025-05-09
+10;Cube;Mountain;L;900.00;true;2025-05-10;2025-05-10

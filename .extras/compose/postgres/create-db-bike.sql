@@ -75,4 +75,4 @@ CREATE DATABASE bike;
 GRANT ALL ON DATABASE bike TO bike;
 
 -- https://www.postgresql.org/docs/10/sql-createtablespace.html
-CREATE TABLESPACE bikespace OWNER bike LOCATION '/var/lib/postgresql/tablespace/bike'
+CREATE TABLESPACE bikespace OWNER bike LOCATION '/var/lib/postgresql/data/tablespace/bike'

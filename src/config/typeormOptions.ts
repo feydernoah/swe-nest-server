@@ -64,7 +64,7 @@ const database = (db?.name as string | undefined) ?? 'bike';
 const host = (db?.host as string | undefined) ?? 'localhost';
 const username = (db?.username as string | undefined) ?? 'postgres';
 const pass = (db?.password as string | undefined) ?? 'postgres';
-const passAdmin = (db?.passwordAdmin as string | undefined) ?? 'p';
+const passAdmin = (db?.passwordAdmin as string | undefined) ?? 'postgres';
 
 // https://github.com/tonivj5/typeorm-naming-strategies/blob/master/src/snake-naming.strategy.ts
 // https://github.com/typeorm/typeorm/blob/master/src/naming-strategy/DefaultNamingStrategy.ts
