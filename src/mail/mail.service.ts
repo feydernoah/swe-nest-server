@@ -42,8 +42,8 @@ export class MailService {
             return;
         }
 
-        const from = '"Joe Doe" <Joe.Doe@acme.com>';
-        const to = '"Foo Bar" <Foo.Bar@acme.com>';
+        const from = '"Max Mustermann" <Max.Mustermann@acme.com>';
+        const to = '"Maja Miesdrauf" <Maja.Miesdrauf@acme.com>';
 
         const data: SendMailOptions = { from, to, subject, html: body };
         this.#logger.debug('#sendMail: data=%o', data);
