@@ -74,7 +74,6 @@ snyk-*.log
 # IDEs and editors
 .idea
 *.iml
-/.env
 .project
 .classpath
 .c9/
@@ -89,3 +88,6 @@ snyk-*.log
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Environment variables
+.env

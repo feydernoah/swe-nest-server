@@ -13,9 +13,18 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+import dotenv from 'dotenv';
 import { type AxiosInstance, type AxiosResponse } from 'axios';
 import { type GraphQLQuery, type GraphQLResponseBody } from './graphql.js';
 import { httpsAgent, tokenPath } from './testserver.js';
+
+// Load environment variables from .env file
+dotenv.config();
+
+const tokenFromEnv = process.env.ACCESS_TOKEN;
+if (!tokenFromEnv) {
+    throw new Error('ACCESS_TOKEN is not set in the environment variables.');
+}
 
 type TokenResult = {
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -33,6 +42,7 @@ export const tokenRest = async (
 ) => {
     const headers: Record<string, string> = {
         'Content-Type': 'application/x-www-form-urlencoded', // eslint-disable-line @typescript-eslint/naming-convention
+        Authorization: `Bearer ${tokenFromEnv}`,
     };
     const response: AxiosResponse<TokenResult> = await axiosInstance.post(
         tokenPath,
@@ -60,8 +70,12 @@ export const tokenGraphQL = async (
         `,
     };
 
+    const headers: Record<string, string> = {
+        Authorization: `Bearer ${tokenFromEnv}`,
+    };
+
     const response: AxiosResponse<GraphQLResponseBody> =
-        await axiosInstance.post('graphql', body, { httpsAgent });
+        await axiosInstance.post('graphql', body, { headers, httpsAgent });
 
     const data = response.data.data!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
     return data.token.access_token as string;
