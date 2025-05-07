@@ -34,7 +34,7 @@ import { entities } from './bike/entity/entities.js';
 @Module({
     imports: [
         AdminModule,
-        BikeModule,
+        BikeModule, // BikeModule ist registriert
         DevModule,
         GraphQLModule.forRoot<ApolloDriverConfig>(graphQlModuleOptions),
         LoggerModule,
