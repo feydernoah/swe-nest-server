@@ -32,4 +32,22 @@ für nur: ${savedBike.price}€ !!!!`;
 
     return savedBike;
   }
+
+  async updateBike(id: number, bikeData: Partial<Bike>): Promise<Bike> {
+    const bike = await this.bikeRepository.findOne({ where: { id } });
+    if (!bike) {
+      throw new Error(`Bike with ID ${id} not found`);
+    }
+    Object.assign(bike, bikeData);
+    return this.bikeRepository.save(bike);
+  }
+
+  async updateBikePrice(id: number, price: number): Promise<Bike> {
+    const bike = await this.bikeRepository.findOne({ where: { id } });
+    if (!bike) {
+      throw new Error(`Bike with ID ${id} not found`);
+    }
+    bike.price = price;
+    return this.bikeRepository.save(bike);
+  }
 }
