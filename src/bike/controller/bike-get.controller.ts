@@ -1,9 +1,11 @@
 import { Controller, Get, Query, Param } from '@nestjs/common';
 import { BikeReadService } from '../service/bike-read.service.js';
+import { getLogger } from '../../logger/logger.js';
 
 @Controller() // Basis-Route ist leer, damit beide Endpunkte unabhängig sind
 export class BikeGetController {
   private bikeReadService: BikeReadService;
+  private readonly logger = getLogger(BikeGetController.name);
 
   constructor(bikeReadService: BikeReadService) {
     this.bikeReadService = bikeReadService;
@@ -12,14 +14,20 @@ export class BikeGetController {
   @Get('bike') // Endpunkt: /bike
   async findAll(): Promise<string> {
     const bikes = await this.bikeReadService.findAll();
+    this.logger.debug(`findAll: ${bikes.length} bikes returned`);
     return JSON.stringify(bikes);
   }
 
   @Get('bike/:id') // Endpunkt: /bike/:id
   async findOne(@Param('id') id: string): Promise<string> {
-    const bikes = await this.bikeReadService.findAll();
-    const bike = bikes.find(b => String(b.id) === id);
-    return bike ? JSON.stringify(bike) : JSON.stringify({ error: 'Bike not found' });
+    const bike = await this.bikeReadService.findOneById(Number(id));
+    if (bike) {
+      this.logger.debug(`findOne: Bike found for id=${id}`);
+      return JSON.stringify(bike);
+    } else {
+      this.logger.debug(`findOne: No bike found for id=${id}`);
+      return JSON.stringify({ error: 'Bike not found' });
+    }
   }
 
   @Get('bikewithtitles') // Endpunkt: /bikewithtitles
@@ -31,6 +39,7 @@ export class BikeGetController {
       brand,
       type,
     });
+    this.logger.debug(`findAllWithTitles: ${bikesWithTitles.length} bikes returned with filters brand=${brand}, type=${type}`);
     return JSON.stringify(bikesWithTitles);
   }
 }
