@@ -1,0 +1,74 @@
+' Copyright (C) 2025 - present Dein Name
+'
+' This program is free software: you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation, either version 3 of the License, or
+' (at your option) any later version.
+'
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+'
+' You should have received a copy of the GNU General Public License
+' along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+' Preview durch <Alt>d
+
+@startuml Controller-Klasse
+
+interface Promise<T>
+
+package @nestjs/common {
+  class "@Controller" as Controller
+  hide Controller circle
+
+  class "@Get" as Get
+  hide Get circle
+
+  class "@Param" as Param
+  hide Param circle
+
+  class "@Query" as Query
+  hide Query circle
+}
+
+package express {
+  class Request
+  class Response
+}
+
+package bike {
+  package entity {
+    class Bike <<entity>>
+  }
+
+  package service {
+    class BikeReadService <<control>> 
+  }
+
+  package rest {
+    class BikeGetController <<control>> <<@Controller()>> {
+      + @Get('bike') findAll(): Promise<string>
+      + @Get('bike/:id') findOne(@Param() id: string): Promise<string>
+      + @Get('bikewithtitles') findAllWithTitles(@Query() brand?, @Query() type?): Promise<string>
+    }
+
+    BikeGetController o--> "1" BikeReadService : service
+
+    BikeGetController ..> Controller
+    BikeGetController ..> Request
+    BikeGetController ..> Response
+    BikeGetController ..> Promise
+    BikeReadService ..> Bike
+
+    BikeReadService .[hidden].> Request
+    Response .right[hidden].> Controller
+  }
+}
+
+hide empty members
+
+footer (c) Gruppe 7
+
+@enduml

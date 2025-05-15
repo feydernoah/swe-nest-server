@@ -35,8 +35,8 @@ package @nestjs/common {
   class "@Put" as Put
   hide Put circle
 
-  class "@Delete" as Delete
-  hide Delete circle
+  class "@Patch" as Patch
+  hide Patch circle
 
   class "@Req" as Req
   hide Req circle
@@ -55,7 +55,7 @@ package @nestjs/common {
 
   UseInterceptors .[hidden].> Post
   UseInterceptors .[hidden].> Put
-  UseInterceptors .[hidden].> Delete
+  UseInterceptors .[hidden].> Patch
 
   Post .[hidden].> Req
   Post .[hidden].> Res
@@ -78,47 +78,46 @@ package express {
   Response .right[hidden].> Controller
 }
 
-package buch {
+package bike {
   package entity #FFFFFF {
-    class Buch <<entity>>
+    class Bike <<entity>>
 
-    Buch .[hidden].> Promise
-    Buch .[hidden].> Request
+    Bike .[hidden].> Promise
+    Bike .[hidden].> Request
   }
 
   package service {
-    class BuchWriteService << control >>
-    class BuchReadService << control >>
+    class BikeWriteService << control >>
+    class MailService
   }
 
   package rest #DDDDDD {
-    class BuchWriteController << control >> << @Controller() >> << @UseGuards() >> << @UseInterceptors() >> {
-      + @Post() @Roles() async post(@Body() buch: Buch, @Req() req: Request,  @Res() res: Response): Promise<Response>
-      + @Put() @Roles() async put(@Body() buch: Buch, @Param() id: number, @Headers() version: string, @Res() res: Response): Promise<Response>
-      + @Delete() @Roles() async delete(@Param() id: number, @Res() res: Response): Promise<Response>
+    class BikeWriteController << control >> << @Controller() >> << @UseGuards() >> << @UseInterceptors() >> {
+      + @Post() @Roles() async writeBike(@Body() bike: Bike, @Req() req: Request,  @Res() res: Response): Promise<Response>
+      + @Put() @Roles() async updateBike(@Body() bike: Bike, @Param() id: number, @Headers() version: string, @Res() res: Response): Promise<Response>
+      + @Patch() @Roles() async updateBikePrice(@Param() id: number, @Body() price: number, @Res() res: Response): Promise<Response>
     }
 
-    BuchWriteController o--> "1" BuchWriteService : service
-    BuchWriteController o--> "1" BuchReadService : readService
-    BuchWriteController ..up> Buch
+    BikeWriteController o--> "1" BikeWriteService : service
+    BikeWriteController ..up> Bike
 
-    BuchWriteController ..> Controller
+    BikeWriteController ..> Controller
 
-    BuchWriteController .up.> AuthGuard
-    BuchWriteController .up.> Roles
+    BikeWriteController .up.> AuthGuard
+    BikeWriteController .up.> Roles
 
-    BuchWriteController ..> Request
-    BuchWriteController ..> Response
-    BuchWriteController ..> Promise
+    BikeWriteController ..> Request
+    BikeWriteController ..> Response
+    BikeWriteController ..> Promise
 
-    Buch .up[hidden].> Roles
-    BuchWriteService .[hidden].> Request
-    BuchWriteService .[hidden].> Promise
+    Bike .up[hidden].> Roles
+    BikeWriteService o--> MailService : mailService
+    BikeWriteService .[hidden].> Promise
   }
 }
 
 hide empty members
 
-footer (c) Juergen Zimmermann
+footer (c) Gruppe 7
 
 @enduml

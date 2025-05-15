@@ -1,0 +1,69 @@
+' Copyright (C) 2025 - present Dein Name
+'
+' This program is free software: you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation, either version 3 of the License, or
+' (at your option) any later version.
+'
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+'
+' You should have received a copy of the GNU General Public License
+' along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+' Preview durch <Alt>d
+
+@startuml Anwendungskern
+
+interface Promise<T>
+
+package @nestjs/common {
+  class "@Injectable" as Injectable
+  hide Injectable circle
+}
+
+package typeorm {
+  class Repository<T>
+}
+
+package @nestjs/typeorm {
+  class "@InjectRepository" as InjectRepository
+  hide InjectRepository circle
+}
+
+package bike {
+  package entity {
+    class Bike
+  }
+
+  package service #DDDDDD {
+    class QueryBuilder
+
+    class BikeReadService << control >> <<@Injectable()>> {
+      + async findAll(): Promise<Bike[]>
+      + async findAllWithTitles(): Promise<Bike[]>
+      + async findAllWithFilters(filters): Promise<Bike[]>
+      + async findOneById(id: number): Promise<Bike | undefined>
+    }
+
+    BikeReadService o--> "1" QueryBuilder : queryBuilder
+    BikeReadService o--> "1" Repository : @InjectRepository bikeRepo
+
+    BikeReadService .up.> Injectable
+    BikeReadService .up.> InjectRepository
+
+    BikeReadService .up.> Promise
+    BikeReadService ..> Bike
+
+    QueryBuilder .[hidden].> Repository
+    QueryBuilder .[hidden].> Bike
+  }
+}
+
+hide empty members
+
+footer (c) Gruppe 7
+
+@enduml

@@ -1,4 +1,4 @@
-' Copyright (C) 2019 - present Juergen Zimmermann, Hochschule Karlsruhe
+' Copyright (C) 2025 - present [Dein Name oder Hochschule]
 '
 ' This program is free software: you can redistribute it and/or modify
 ' it under the terms of the GNU General Public License as published by
@@ -17,48 +17,28 @@
 
 @startuml ER Diagramm
 
-' hide the spot
 hide circle
-
-' evtl. Prbleme mit Kraehenfuessen vermeiden
 skinparam linetype ortho
 
-entity "Buch" {
+entity "Bike" {
   * id: integer <<generated>>
   --
-  * version: integer
-  * isbn: text
-  * rating: number
-  * art: text
-  * preis: number
-  * rabatt: number
-  * lieferbar: boolean
-    datum: date
-    homepage: text
-  * **titel_id**: integer <<FK>>
-    schlagwoerter: text
-  * erzeugt: timestamp
-  * aktualisiert: timestamp
+  * brand: text
+  * type: text
+  * frameSize: text
+  * price: number
+  * available: boolean
 }
 
-entity "Titel" {
-  * id: integer <<generated>>
+entity "BikeTitle" {
+  * bikeId: integer <<PK, FK>>
   --
-  * titel: text
-    untertitel: text
+  * title: text
+  * subtitle: text
 }
 
-entity "Abbildung" {
-  * id: integer <<generated>>
-  --
-  * beschriftung: text
-    contentType: text
-  * **buch_id**: integer <<FK>>
-}
+Bike ||--|| BikeTitle
 
-Buch ||..|| Titel
-Buch ||..o{ Abbildung
-
-footer (c) Jürgen Zimmermann
+footer (c) Gruppe 7
 
 @enduml
