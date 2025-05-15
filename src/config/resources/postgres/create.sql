@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS bike_image (
     id              integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE bikespace,
     description     text NOT NULL,
     content_type    text NOT NULL,
+    image           bytea,
     bike_id         integer NOT NULL REFERENCES bike
 ) TABLESPACE bikespace;
 CREATE INDEX IF NOT EXISTS bike_image_bike_id_idx ON bike_image(bike_id) TABLESPACE bikespace;
