@@ -33,4 +33,9 @@ export class BikeReadService {
 
     return queryBuilder.getMany();
   }
+
+  async findOneById(id: number): Promise<Bike | undefined> {
+    const result = await this.bikeRepository.findOne({ where: { id } });
+    return result === null ? undefined : result;
+  }
 }

@@ -6,10 +6,11 @@ import { BikeReadService } from './service/bike-read.service.js';
 import { BikeWriteController } from './controller/bike-write.controller.js';
 import { BikeWriteService } from './service/bike-write.service.js';
 import { MailModule } from '../mail/mail.module.js';
+import { BikeResolver } from './bike.resolver.js';
 
 @Module({
     imports: [TypeOrmModule.forFeature(entities), MailModule],
     controllers: [BikeGetController, BikeWriteController],
-    providers: [BikeReadService, BikeWriteService],
+    providers: [BikeReadService, BikeWriteService, BikeResolver],
 })
 export class BikeModule {}

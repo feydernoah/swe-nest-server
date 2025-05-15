@@ -66,18 +66,11 @@ type Bike {
   images: [Image!]
 }
 
-"Enum-Typ für die Art eines Fahrrads"
-enum Type {
-  MOUNTAIN
-  ROAD
-  HYBRID
-}
-
 "Suchkriterien für Fahrräder"
 input SuchkriterienInput {
   title: String
   brand: String
-  type: Type
+  type: String
   available: Boolean
 }
 
@@ -96,7 +89,7 @@ input ImageInput {
 "Daten für ein neues Fahrrad"
 input BikeInput {
   brand: String
-  type: Type
+  type: String
   price: Float
   available: Boolean
   createdAt: String
@@ -114,7 +107,7 @@ input BikeUpdateInput {
   id: ID
   version: Int
   brand: String
-  type: Type
+  type: String
   price: Float
   available: Boolean
   createdAt: String
