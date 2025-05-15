@@ -12,6 +12,7 @@
     "npm": ">=11.1.0"
   },
   "scripts": {
+    "lint": "eslint src __tests__",
     "prebuild": "npm run clean",
     "build": "nest build",
     "start": "node dist/main.js",
