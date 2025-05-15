@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Use Node.js 18 and cache npm dependencies
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # Run linter
+      - name: Lint source
+        run: npm run lint
+
+      # Build the application
+      - name: Build
+        run: npm run build
+
+      # Run unit tests with coverage
+      - name: Test
+        run: npm test -- --coverage --runInBand

@@ -34,16 +34,9 @@ services:
       - published: 9092
         target: 9092
     volumes:
-      - type: bind
-        source: C:/Zimmermann/volumes/sonarqube/data
-        target: /opt/sonarqube/data
-      - type: bind
-        source: C:/Zimmermann/volumes/sonarqube/logs
-        target: /opt/sonarqube/logs
-      - type: bind
-        source: C:/Zimmermann/volumes/sonarqube/extensions
-        target: /opt/sonarqube/lib/extensions
-        read_only: true
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_extensions:/opt/sonarqube/lib/extensions:ro
     networks: [sonar-network]
     env_file: .env
     hostname: sonarqube
@@ -62,3 +55,8 @@ services:
 networks:
   sonar-network:
     name: sonar-network
+
+volumes:
+  sonarqube_data:
+  sonarqube_logs:
+  sonarqube_extensions:
