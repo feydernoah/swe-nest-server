@@ -1,4 +1,4 @@
-' Copyright (C) 2019 - present Juergen Zimmermann, Hochschule Karlsruhe
+' Copyright (C) 2025 - present [Dein Name oder Hochschule]
 '
 ' This program is free software: you can redistribute it and/or modify
 ' it under the terms of the GNU General Public License as published by
@@ -33,35 +33,38 @@ package @nestjs/typeorm {
   hide InjectRepository circle
 }
 
-package buch {
+package mail {
+  class MailService
+}
+
+package bike {
   package entity {
-    class Buch
+    class Bike
   }
 
   package service #DDDDDD {
-    class QueryBuilder
-
-    class BuchReadService << control >> <<@Injectable()>> {
-      + async findById(id: number): Promise<Buch | undefined>
-      + async find(suchkriterien?: Record<string, any>): Promise<Buch[]>
+    class BikeWriteService << control >> <<@Injectable()>> {
+      + async createBike(bikeData: Partial<Bike>): Promise<Bike>
+      + async updateBike(id: number, bikeData: Partial<Bike>): Promise<Bike>
+      + async updateBikePrice(id: number, price: number): Promise<Bike>
     }
 
-    BuchReadService o--> "1" QueryBuilder: queryBuilder
-    BuchReadService o--> "1" Repository: @InjectRepository repo
+    BikeWriteService o--> "1" Repository : @InjectRepository bikeRepository
+    BikeWriteService o--> "1" MailService : mailService
 
-    BuchReadService .up.> Injectable
-    BuchReadService .up.> InjectRepository
+    BikeWriteService .up.> Injectable
+    BikeWriteService .up.> InjectRepository
 
-    BuchReadService .up.> Promise
-    BuchReadService ..> Buch
+    BikeWriteService .up.> Promise
+    BikeWriteService ..> Bike
 
-    QueryBuilder .[hidden].> Repository
-    QueryBuilder .[hidden].> Buch
+    MailService .[hidden].> Promise
+    Bike .[hidden].> Promise
   }
 }
 
 hide empty members
 
-footer (c) Jürgen Zimmermann
+footer (c) Gruppe 7
 
 @enduml

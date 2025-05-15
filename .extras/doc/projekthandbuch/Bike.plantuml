@@ -1,0 +1,61 @@
+' Copyright (C) 2025 - present Dein Name
+'
+' This program is free software: you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation, either version 3 of the License, or
+' (at your option) any later version.
+'
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+'
+' You should have received a copy of the GNU General Public License
+' along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+' Preview durch <Alt>D
+
+@startuml Entity
+
+package typeorm {
+  class "@Entity" as Entity
+  hide Entity circle
+  class "@Column" as Column
+  hide Column circle
+  class "@PrimaryGeneratedColumn" as PrimaryGeneratedColumn
+  hide PrimaryGeneratedColumn circle
+  class "@OneToOne" as OneToOne
+  hide OneToOne circle
+  class "@JoinColumn" as JoinColumn
+  hide JoinColumn circle
+}
+
+package bike.entity {
+  class Bike <<entity>> <<@Entity>> {
+    @PrimaryGeneratedColumn() id: number
+    @Column() brand: string
+    @Column() type: string
+    @Column() frameSize: string
+    @Column() price: number
+    @Column() available: boolean
+    @OneToOne() title: BikeTitle
+  }
+
+  class BikeTitle <<entity>> <<@Entity>> {
+    @PrimaryGeneratedColumn() id: number
+    @Column() title: string
+    @Column() subtitle?: string
+    @Column() bikeId: number
+  }
+
+  Bike *--> "1" BikeTitle : @OneToOne() \ntitle
+
+  Bike .right.> Entity
+  
+}
+
+hide empty members
+
+footer (c) Gruppe 7
+
+@enduml
