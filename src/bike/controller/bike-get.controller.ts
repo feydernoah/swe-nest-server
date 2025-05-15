@@ -1,4 +1,5 @@
-import { Controller, Get, Query, Param } from '@nestjs/common';
+import { Controller, Get, Query, Param, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { BikeReadService } from '../service/bike-read.service.js';
 import { getLogger } from '../../logger/logger.js';
 
@@ -20,7 +21,12 @@ export class BikeGetController {
 
   @Get('bike/:id') // Endpunkt: /bike/:id
   async findOne(@Param('id') id: string): Promise<string> {
-    const bike = await this.bikeReadService.findOneById(Number(id));
+    const numId = Number(id);
+    if (isNaN(numId)) {
+      this.logger.debug(`findOne: Invalid id=${id}`);
+      return JSON.stringify({ error: 'Invalid id' });
+    }
+    const bike = await this.bikeReadService.findOneById(numId);
     if (bike) {
       this.logger.debug(`findOne: Bike found for id=${id}`);
       return JSON.stringify(bike);
@@ -41,5 +47,23 @@ export class BikeGetController {
     });
     this.logger.debug(`findAllWithTitles: ${bikesWithTitles.length} bikes returned with filters brand=${brand}, type=${type}`);
     return JSON.stringify(bikesWithTitles);
+  }
+
+  @Get('bikeimage') // Endpunkt: /bikeimage
+  async getBikeImageByBikeId(
+    @Query('bikeId') bikeId: string,
+    @Res() res: Response,
+  ) {
+    const id = Number(bikeId);
+    if (isNaN(id)) {
+      return res.status(400).send('Invalid bikeId');
+    }
+    const image = await this.bikeReadService.getImageByBikeId(id);
+    if (!image || !image.data) {
+      return res.status(404).send('Image not found');
+    }
+    res.setHeader('Content-Type', image.contentType || 'application/octet-stream');
+    res.send(image.data);
+    return;
   }
 }

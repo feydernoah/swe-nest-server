@@ -14,6 +14,9 @@ export class BikeImage {
     @Column('int')
     bikeId: number | undefined;
 
+    @Column('bytea', { name: 'image', nullable: true })
+    data: Buffer | undefined;
+
     public toString = (): string =>
         JSON.stringify({
             id: this.id,

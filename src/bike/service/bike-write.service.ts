@@ -2,20 +2,24 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Bike } from '../entity/bike.entity.js';
+import { BikeImage } from '../entity/bike-image.entity.js';
 import { MailService } from '../../mail/mail.service.js';
 import { getLogger } from '../../logger/logger.js';
 
 @Injectable()
 export class BikeWriteService {
   bikeRepository: Repository<Bike>;
+  private bikeImageRepository: Repository<BikeImage>;
   private mailService: MailService;
   private readonly logger = getLogger(BikeWriteService.name);
 
   constructor(
     @InjectRepository(Bike) bikeRepository: Repository<Bike>,
+    @InjectRepository(BikeImage) bikeImageRepository: Repository<BikeImage>,
     mailService: MailService,
   ) {
     this.bikeRepository = bikeRepository;
+    this.bikeImageRepository = bikeImageRepository;
     this.mailService = mailService;
   }
 
@@ -52,5 +56,25 @@ export class BikeWriteService {
     const updatedBike = await this.bikeRepository.save(bike);
     this.logger.debug(`updateBikePrice: Price updated for bike id=${id}`);
     return updatedBike;
+  }
+
+  async insertBikeImage(
+    bikeId: number,
+    description: string,
+    contentType: string,
+    data: Buffer,
+  ): Promise<BikeImage> {
+    const bikeImage = this.bikeImageRepository.create({
+      bikeId,
+      description,
+      contentType,
+      data,
+    });
+    return this.bikeImageRepository.save(bikeImage);
+  }
+
+  async getImageByBikeId(bikeId: number): Promise<BikeImage | undefined> {
+    const image = await this.bikeImageRepository.findOne({ where: { bikeId } });
+    return image === null ? undefined : image;
   }
 }

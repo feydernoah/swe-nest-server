@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Bike } from '../entity/bike.entity.js';
+import { BikeImage } from '../entity/bike-image.entity.js';
 import { getLogger } from '../../logger/logger.js';
 
 @Injectable()
@@ -50,5 +51,10 @@ export class BikeReadService {
     }
     this.logger.debug(`findOneById: Bike found for id=${id}`);
     return result;
+  }
+
+  async getImageByBikeId(bikeId: number): Promise<BikeImage | undefined> {
+    const image = await this.bikeRepository.manager.getRepository(BikeImage).findOne({ where: { bikeId } });
+    return image === null ? undefined : image;
   }
 }
