@@ -19,6 +19,7 @@ import { Public } from 'nest-keycloak-connect';
 import { getLogger } from '../../logger/logger.js';
 import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.js';
 import { KeycloakService } from './keycloak.service.js';
+import { UserInputError } from '@nestjs/apollo';
 
 // @nestjs/graphql fasst die Input-Daten zu einem Typ zusammen
 /** Typdefinition für Token-Daten bei GraphQL */
@@ -56,7 +57,7 @@ export class TokenResolver {
             password,
         });
         if (result === undefined) {
-            throw new Error('Falscher Benutzername oder falsches Passwort');
+            throw new UserInputError('Falscher Benutzername oder falsches Passwort');
         }
 
         this.#logger.debug('token: result=%o', result);
