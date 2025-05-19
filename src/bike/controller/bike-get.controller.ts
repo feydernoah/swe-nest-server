@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Param, Res } from '@nestjs/common';
+import { Controller, Get, Query, Param, Res, NotFoundException } from '@nestjs/common';
 import { Response } from 'express';
 import { BikeReadService } from '../service/bike-read.service.js';
 import { getLogger } from '../../logger/logger.js';
@@ -24,7 +24,7 @@ export class BikeGetController {
     const numId = Number(id);
     if (isNaN(numId)) {
       this.logger.debug(`findOne: Invalid id=${id}`);
-      return JSON.stringify({ error: 'Invalid id' });
+      throw new NotFoundException('Invalid id');
     }
     const bike = await this.bikeReadService.findOneById(numId);
     if (bike) {
@@ -32,7 +32,7 @@ export class BikeGetController {
       return JSON.stringify(bike);
     } else {
       this.logger.debug(`findOne: No bike found for id=${id}`);
-      return JSON.stringify({ error: 'Bike not found' });
+      throw new NotFoundException('Bike not found');
     }
   }
 
@@ -45,6 +45,10 @@ export class BikeGetController {
       brand,
       type,
     });
+    if (!bikesWithTitles || bikesWithTitles.length === 0) {
+      this.logger.debug(`findAllWithTitles: No bikes found with filters brand=${brand}, type=${type}`);
+      throw new NotFoundException('No bikes found with the given filters');
+    }
     this.logger.debug(`findAllWithTitles: ${bikesWithTitles.length} bikes returned with filters brand=${brand}, type=${type}`);
     return JSON.stringify(bikesWithTitles);
   }
@@ -60,7 +64,8 @@ export class BikeGetController {
     }
     const image = await this.bikeReadService.getImageByBikeId(id);
     if (!image || !image.data) {
-      return res.status(404).send('Image not found');
+      // Rückgabe als Exception für konsistentes Fehlerhandling
+      throw new NotFoundException('Image not found');
     }
     res.setHeader('Content-Type', image.contentType || 'application/octet-stream');
     res.send(image.data);
