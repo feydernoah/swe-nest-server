@@ -1,6 +1,15 @@
 import { Column, Entity, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
 import { BikeTitle } from './bike-title.entity.js';
 
+/**
+ * Repräsentiert ein Fahrrad im System.
+ * 
+ * Diese Entity enthält grundlegende Informationen wie Marke, Typ, Rahmenhöhe,
+ * Preis und Verfügbarkeit eines Fahrrads. Sie steht in einer 1:1-Beziehung zu
+ * einem optionalen `BikeTitle`, das zusätzliche beschreibende Informationen enthalten kann.
+ * 
+ * Die ID wird automatisch generiert und dient als Primärschlüssel.
+ */
 @Entity()
 export class Bike {
     @PrimaryGeneratedColumn()

@@ -3,23 +3,45 @@ import { Response } from 'express';
 import { BikeReadService } from '../service/bike-read.service.js';
 import { getLogger } from '../../logger/logger.js';
 
+/**
+ * REST-Controller für Lesezugriffe auf Bike-Ressourcen.
+ * Bietet Endpunkte zur Abfrage von Bikes, gefilterten Bikes und Bike-Bildern.
+ */
 @Controller() // Basis-Route ist leer, damit beide Endpunkte unabhängig sind
 export class BikeGetController {
   private bikeReadService: BikeReadService;
   private readonly logger = getLogger(BikeGetController.name);
 
+  /**
+   * Konstruktor mit Injektion des Read-Services.
+   * 
+   * @param bikeReadService - Service zum Lesen von Bike-Daten
+   */
   constructor(bikeReadService: BikeReadService) {
     this.bikeReadService = bikeReadService;
   }
 
-  @Get('bike') // Endpunkt: /bike
+  /**
+   * GET-Endpunkt: `/bike`
+   * Gibt alle Bikes als JSON-String zurück.
+   * 
+   * @returns JSON-String mit allen Bikes
+   */
+  @Get('bike')
   async findAll(): Promise<string> {
     const bikes = await this.bikeReadService.findAll();
     this.logger.debug(`findAll: ${bikes.length} bikes returned`);
     return JSON.stringify(bikes);
   }
 
-  @Get('bike/:id') // Endpunkt: /bike/:id
+  /**
+   * GET-Endpunkt: `/bike/:id`
+   * Gibt ein einzelnes Bike anhand der ID zurück.
+   * 
+   * @param id - ID des Bikes als Pfadparameter
+   * @returns JSON-String mit dem Bike oder Fehlermeldung
+   */
+  @Get('bike/:id')
   async findOne(@Param('id') id: string): Promise<string> {
     const numId = Number(id);
     if (isNaN(numId)) {
@@ -36,7 +58,15 @@ export class BikeGetController {
     }
   }
 
-  @Get('bikewithtitles') // Endpunkt: /bikewithtitles
+  /**
+   * GET-Endpunkt: `/bikewithtitles`
+   * Gibt Bikes mit optionaler Filterung nach Marke und Typ zurück.
+   * 
+   * @param brand - optionale Filterung nach Marke
+   * @param type - optionale Filterung nach Typ
+   * @returns JSON-String mit gefilterten Bikes
+   */
+  @Get('bikewithtitles')
   async findAllWithTitles(
     @Query('brand') brand?: string,
     @Query('type') type?: string,
@@ -53,7 +83,15 @@ export class BikeGetController {
     return JSON.stringify(bikesWithTitles);
   }
 
-  @Get('bikeimage') // Endpunkt: /bikeimage
+  /**
+   * GET-Endpunkt: `/bikeimage`
+   * Gibt das Bild eines Bikes als binäre Antwort zurück.
+   * 
+   * @param bikeId - ID des Bikes als Query-Parameter
+   * @param res - Express-Response-Objekt zur direkten Antwortmanipulation
+   * @returns HTTP-Response mit dem Bild oder Fehlermeldung
+   */
+  @Get('bikeimage')
   async getBikeImageByBikeId(
     @Query('bikeId') bikeId: string,
     @Res() res: Response,
