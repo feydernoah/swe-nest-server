@@ -26,11 +26,48 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Start backend services
+        run: docker-compose -f .extras/compose/debug/compose.yml up -d
+
+      - name: Wait for backend to be ready
+        run: sleep 15
+
+      - name: Test
+        run: npm test -- --coverage --runInBand
+
+      - name: Stop backend services
+        if: always()
+        run: docker-compose -f .extras/compose/debug/compose.yml down
+
       - name: Lint source
         run: npm run lint
 
       - name: Build
         run: npm run build
 
-      - name: Test
-        run: npm test -- --coverage --runInBand
+      - name: Security Audit
+        run: npm audit --omit=dev || true
+
+      - name: Generate AsciiDoc Docs
+        run: npm run asciidoctor
+
+      - name: Generate reveal.js Slides
+        run: npm run revealjs
+
+      - name: Generate API Docs
+        run: npm run typedoc
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage
+
+      - name: Upload generated docs
+        uses: actions/upload-artifact@v3
+        with:
+          name: bike-docs
+          path: |
+            .extras/doc/projekthandbuch/html
+            .extras/doc/folien
+            .extras/doc/api
