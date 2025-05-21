@@ -76,7 +76,7 @@ pipeline {
 
                 // https://www.jenkins.io/doc/pipeline/steps/git
                 // "named arguments" statt Funktionsaufruf mit Klammern
-                git url: 'https://github.com/juergenzimmermann/buch', branch: 'main', poll: true
+                git url: 'https://github.com/noah/swe-nest-server.git', branch: 'main', poll: true
             }
         }
 
@@ -212,14 +212,13 @@ pipeline {
 
                 success {
                     script {
-                        if (fileExists("${env.WORKSPACE}/buch.zip")) {
-                            sh 'rm buch.zip'
+                        if (fileExists("${env.WORKSPACE}/bike.zip")) {
+                            sh 'rm bike.zip'
                         }
                     }
-                    // https://www.jenkins.io/doc/pipeline/steps/pipeline-utility-steps/#zip-create-zip-file
-                    zip zipFile: 'buch.zip', archive: false, dir: 'dist'
-                    // jobs/buch/builds/.../archive/buch.zip
-                    archiveArtifacts 'buch.zip'
+                    // Create and archive bike service package
+                    zip zipFile: 'bike.zip', archive: false, dir: 'dist'
+                    archiveArtifacts 'bike.zip'
                 }
             }
         }
