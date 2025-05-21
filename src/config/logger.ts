@@ -18,6 +18,7 @@ import pino from 'pino';
 import { type PrettyOptions } from 'pino-pretty';
 import { config } from './app.js';
 import { env } from './env.js';
+import { mkdirSync } from 'node:fs';
 
 /**
  * Das Modul enthält die Konfiguration für den Logger.
@@ -43,6 +44,13 @@ const logFile =
     logDir === undefined
         ? logFileDefault
         : path.resolve(logDir, logFileNameDefault);
+// Create log directory if missing
+const logDirPath = path.dirname(logFile);
+try {
+    mkdirSync(logDirPath, { recursive: true });
+} catch {
+    // ignore
+}
 const pretty = log?.pretty === true;
 
 // https://getpino.io

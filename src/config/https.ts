@@ -31,7 +31,14 @@ const tlsDir = path.resolve(RESOURCES_DIR, 'tls');
 console.debug('tlsDir = %s', tlsDir);
 
 // public/private keys und Zertifikat fuer TLS
-export const httpsOptions: HttpsOptions = {
-    key: readFileSync(path.resolve(tlsDir, 'key.pem')), // eslint-disable-line security/detect-non-literal-fs-filename
-    cert: readFileSync(path.resolve(tlsDir, 'certificate.crt')), // eslint-disable-line security/detect-non-literal-fs-filename
-};
+let keyBuffer: Buffer;
+let certBuffer: Buffer;
+try {
+  keyBuffer = readFileSync(path.resolve(tlsDir, 'key.pem')); // eslint-disable-line security/detect-non-literal-fs-filename
+  certBuffer = readFileSync(path.resolve(tlsDir, 'certificate.crt')); // eslint-disable-line security/detect-non-literal-fs-filename
+} catch {
+  // if files are not present (e.g. in CI tests), use empty buffers
+  keyBuffer = Buffer.alloc(0);
+  certBuffer = Buffer.alloc(0);
+}
+export const httpsOptions: HttpsOptions = { key: keyBuffer, cert: certBuffer };
