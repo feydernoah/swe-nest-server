@@ -58,13 +58,13 @@ jobs:
         run: npm run typedoc
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage
 
       - name: Upload generated docs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: bike-docs
           path: |
