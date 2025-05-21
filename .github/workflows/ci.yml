@@ -26,6 +26,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Ensure acme-network exists
+        run: docker network create acme-network || true
+
       - name: Start backend services
         run: docker compose -f .extras/compose/debug/compose.yml up -d
 
