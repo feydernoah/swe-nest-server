@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  db:
+    volumes:
+      - ${GITHUB_WORKSPACE}/.extras/compose/actions/ci-data/postgres:/var/lib/postgresql/data
+
+  keycloak:
+    volumes:
+      - ${GITHUB_WORKSPACE}/.extras/compose/actions/ci-data/keycloak:/opt/keycloak/data

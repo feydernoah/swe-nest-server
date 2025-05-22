@@ -30,7 +30,8 @@ jobs:
         run: docker network create acme-network || true
 
       - name: Start backend services
-        run: docker compose -f .extras/compose/backend/compose.yml up -d
+        run: docker compose -f .extras/compose/backend/compose.yml \
+                          -f .extras/compose/actions/compose.yml up -d
 
       - name: Wait for backend to be ready
         run: sleep 15
@@ -40,7 +41,8 @@ jobs:
 
       - name: Stop backend services
         if: always()
-        run: docker compose -f .extras/compose/backend/compose.yml down
+        run: docker compose -f .extras/compose/backend/compose.yml \
+                          -f .extras/compose/actions/compose.yml down
 
       - name: Lint source
         run: npm run lint
