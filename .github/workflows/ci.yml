@@ -30,7 +30,7 @@ jobs:
         run: docker network create acme-network || true
 
       - name: Start backend services
-        run: docker compose -f .extras/compose/backend/compose.yml -f .extras/compose/actions/compose.yml up -d
+        run: docker compose -f .extras/compose/backend/compose.yml -f .extras/compose/actions/compose.yml up
 
       - name: Wait for backend to be ready
         run: sleep 15
