@@ -1,0 +1,13 @@
+services:
+  db:
+    volumes:
+      - ./ci-data/postgres:/var/lib/postgresql/data
+
+  keycloak:
+    volumes:
+      - ./ci-data/keycloak:/opt/keycloak/data
+
+# Usage:
+# docker network create acme-network || true
+# docker compose -f .extras/compose/backend/compose.yml \
+#   -f .extras/compose/actions/compose.override.yml up -d
