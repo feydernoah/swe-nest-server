@@ -7,15 +7,12 @@ import {
   Patch,
   UploadedFile,
   UseInterceptors,
-  Get,
   Res,
-  Query,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { BikeWriteService } from '../service/bike-write.service.js';
 import { Bike } from '../entity/bike.entity.js';
-import { BikeImage } from '../entity/bike-image.entity.js';
-import { Response } from 'express';
 
 /**
  * REST-Controller für Schreiboperationen auf Bike-Ressourcen.
@@ -39,11 +36,19 @@ export class BikeWriteController {
    * Erstellt ein neues Bike auf Basis der übergebenen Daten.
    *
    * @param bikeData - Teilobjekt des Bike-DTOs
-   * @returns Das neu erstellte Bike-Objekt
+   * @returns 201-Status bei Erfolg, 400 bei Fehlern
    */
   @Post()
-  async writeBike(@Body() bikeData: Partial<Bike>): Promise<Bike> {
-    return this.bikeCreateService.createBike(bikeData);
+  async writeBike(
+    @Body() bikeData: Partial<Bike>,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      await this.bikeCreateService.createBike(bikeData);
+      res.status(201).send();
+    } catch (error) {
+      res.status(400).send();
+    }
   }
 
   /**
@@ -52,11 +57,20 @@ export class BikeWriteController {
    *
    * @param id - ID des zu aktualisierenden Bikes
    * @param bikeData - Neue Daten für das Bike
-   * @returns Das aktualisierte Bike-Objekt
+   * @returns 201-Status bei Erfolg, 400 bei Fehlern
    */
   @Put(':id')
-  async updateBike(@Param('id') id: number, @Body() bikeData: Partial<Bike>): Promise<Bike> {
-    return this.bikeCreateService.updateBike(id, bikeData);
+  async updateBike(
+    @Param('id') id: number,
+    @Body() bikeData: Partial<Bike>,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      await this.bikeCreateService.updateBike(id, bikeData);
+      res.status(201).send();
+    } catch (error) {
+      res.status(400).send();
+    }
   }
 
   /**
@@ -65,62 +79,51 @@ export class BikeWriteController {
    *
    * @param id - ID des Bikes
    * @param price - Neuer Preiswert
-   * @returns Das aktualisierte Bike mit neuem Preis
+   * @returns 201-Status bei Erfolg, 400 bei Fehlern
    */
   @Patch(':id/price')
-  async updateBikePrice(@Param('id') id: number, @Body('price') price: number): Promise<Bike> {
-    return this.bikeCreateService.updateBikePrice(id, price);
+  async updateBikePrice(
+    @Param('id') id: number,
+    @Body('price') price: number,
+    @Res() res: Response,
+  ): Promise<void> {
+    try {
+      await this.bikeCreateService.updateBikePrice(id, price);
+      res.status(201).send();
+    } catch (error) {
+      res.status(400).send();
+    }
   }
 
   /**
-   * POST-Endpunkt: `/bike/image`
+   * POST-Endpunkt: `/bike/file`
    * Lädt ein Bild zu einem Bike hoch und speichert es.
    *
    * @param bikeId - ID des zugehörigen Bikes
    * @param description - Beschreibung des Bildes
    * @param contentType - MIME-Typ des Bildes (z. B. image/png)
    * @param file - Bilddatei als hochgeladenes Multer-File
-   * @returns Das gespeicherte BikeImage-Objekt
+   * @returns 201-Status bei Erfolg, 400 bei Fehlern
    */
-  @Post('image')
+  @Post('file')
   @UseInterceptors(FileInterceptor('file'))
   async uploadBikeImage(
     @Body('bikeId') bikeId: number,
     @Body('description') description: string,
     @Body('contentType') contentType: string,
     @UploadedFile() file: Express.Multer.File,
-  ): Promise<BikeImage> {
-    return this.bikeCreateService.insertBikeImage(
-      bikeId,
-      description,
-      contentType,
-      file.buffer,
-    );
-  }
-
-  /**
-   * GET-Endpunkt: `/bike/image`
-   * Gibt ein Bike-Bild anhand der Bike-ID als HTTP-Response zurück.
-   *
-   * @param bikeId - ID des Bikes als Query-Parameter
-   * @param res - Express-Response-Objekt zur direkten Datenrückgabe
-   * @returns HTTP-Response mit Bilddaten oder Fehlermeldung
-   */
-  @Get('image')
-  async getBikeImageByBikeId(
-    @Query('bikeId') bikeId: string,
     @Res() res: Response,
-  ) {
-    const id = Number(bikeId);
-    if (isNaN(id)) {
-      return res.status(400).send('Invalid bikeId');
+  ): Promise<void> {
+    try {
+      await this.bikeCreateService.insertBikeImage(
+        bikeId,
+        description,
+        contentType,
+        file.buffer,
+      );
+      res.status(201).send();
+    } catch (error) {
+      res.status(400).send();
     }
-    const image = await this.bikeCreateService.getImageByBikeId(id);
-    if (!image || !image.data) {
-      return res.status(404).send('Image not found');
-    }
-    res.setHeader('Content-Type', image.contentType || 'application/octet-stream');
-    res.send(image.data);
-    return;
   }
 }

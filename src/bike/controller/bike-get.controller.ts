@@ -84,14 +84,14 @@ export class BikeGetController {
   }
 
   /**
-   * GET-Endpunkt: `/bikeimage`
+   * GET-Endpunkt: `/file`
    * Gibt das Bild eines Bikes als binäre Antwort zurück.
    * 
    * @param bikeId - ID des Bikes als Query-Parameter
    * @param res - Express-Response-Objekt zur direkten Antwortmanipulation
    * @returns HTTP-Response mit dem Bild oder Fehlermeldung
    */
-  @Get('bikeimage')
+  @Get('file')
   async getBikeImageByBikeId(
     @Query('bikeId') bikeId: string,
     @Res() res: Response,
